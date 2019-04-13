@@ -1,10 +1,10 @@
 const async = require('async')
-const gcsHelpers = require('../../helpers/google-cloud-storage');
+const gcsHelpers = require('../helpers/google-cloud-storage');
 const { storage } = gcsHelpers;
 
-const DEFAULT_BUCKET_NAME = 'hackpack-2019';
+const DEFAULT_BUCKET_NAME = 'packhacks-2019';
 
-async function get_transcript(audio_url) {
+const get_transcript = (audio_url) => {
     // Imports the Google Cloud client library
     const speech = require('@google-cloud/speech');
     const fs = require('fs');
