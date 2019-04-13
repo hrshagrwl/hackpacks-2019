@@ -1,5 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const async = require('async')
+const Google_api = require('./app/models/google_api')
 
 const app = express();
 
@@ -13,6 +15,7 @@ const port = 8000;
 
 app.listen(port, () => {
   console.log("App is listening on port : ", port);
+  Google_api.upload_file();
 });
 
 module.exports = app
