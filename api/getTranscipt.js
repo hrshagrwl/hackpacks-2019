@@ -40,12 +40,11 @@ module.exports = async (req, res) => {
 
     console.log(`Transcription: ${transcription}`);
 
-    const summary = getSummary(transcription);
-
-    console.log(summary);
-
-    res.setHeader('Content-type', "application/octet-stream");
-    res.setHeader('Content-disposition', 'attachment; filename=file.txt');
-    res.send(summary);
+    const summary = getSummary(transcription)
+    summary.then((result) => {
+      res.setHeader('Content-type', "application/octet-stream");
+      res.setHeader('Content-disposition', 'attachment; filename=file.txt');
+      res.send(result);
+    });
   }
 }

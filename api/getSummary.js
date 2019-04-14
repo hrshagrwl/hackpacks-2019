@@ -1,5 +1,5 @@
 const deepai = require('deepai'); 
-deepai.setApiKey('---');
+deepai.setApiKey('52bd313e-2be6-4801-ba74-7ae9a51c40ad');
 const fs = require('fs');
 
 
@@ -16,11 +16,11 @@ Time Warner's fourth quarter profits were slightly better than analysts' expecta
 TimeWarner is to restate its accounts as part of efforts to resolve an inquiry into AOL by US market regulators. It has already offered to pay $300m to settle charges, in a deal that is under review by the SEC. The company said it was unable to estimate the amount it needed to set aside for legal reserves, which it previously set at $500m. It intends to adjust the way it accounts for a deal with German music publisher Bertelsmann's purchase of a stake in AOL Europe, which it had reported as advertising revenue. It will now book the sale of its stake in AOL Europe as a loss on the value of that stake.
 `
 const getSummary = async (text) => {
-	console.log(tttt)
-	const resp = await deepai.callStandardApi("summarization", {
-	        text: tttt,
-	});
-	return resp;
+	// console.log(tttt)
+	const resp = deepai.callStandardApi("summarization", {
+	        text: text,
+	})
+	return resp
 }
 
 module.exports = { getSummary }
