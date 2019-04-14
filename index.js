@@ -1,6 +1,9 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const Multer = require('multer');
+const mime = require('mime-types');
+const crypto = require('crypto');
+const multer = require('multer');
 
 const app = express();
 
@@ -18,7 +21,19 @@ global.GOOGLE_PROJECT_ID = 'leafy-chariot-237517';
 // router.route(app);
 
 const port = 8000;
-const upload = Multer({ dest: 'uploads/' });
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads/')
+  },
+  filename: function (req, file, cb) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      cb(null, raw.toString('hex') + '.'+ mime.extension(file.mimetype));
+    });
+  }
+});
+
+const upload = multer({ storage: storage });
 
 app.post(
   '/upload',

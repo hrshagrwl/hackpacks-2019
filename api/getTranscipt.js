@@ -1,7 +1,64 @@
+// Imports the Google Cloud client library
+const speech = require('@google-cloud/speech');
+const mm = require('music-metadata');
+const util = require('util');
+const LANGUAGE = 'en-US';
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
   let data = req.body;
   if (req.file && req.file.cloudStoragePublicUrl) {
+
+
+    // mm.parseFile(req.file.path, {
+    //     native: true
+    //   })
+    //   .then(metadata => {
+    //     console.log(util.inspect(metadata, {
+    //       showHidden: false,
+    //       depth: null
+    //     }));
+    //   })
+    //   .catch(err => {
+    //     console.error(err.message);
+    //   });
+    // Creates a client
+    const client = new speech.SpeechClient();
+
+    /**
+     * TODO(developer): Uncomment the following lines before running the sample.
+     */
+    const gcsUri = `gs://${global.CLOUD_BUCKET}/${req.file.filename}`;
+    const encoding = 'LINEAR16';
+    const sampleRateHertz = 8000;
+    const languageCode = 'en-US';
+
+    const config = {
+      encoding: encoding,
+      sampleRateHertz: sampleRateHertz,
+      languageCode: LANGUAGE,
+    };
+
+    const audio = {
+      uri: gcsUri,
+    };
+
+    const request = {
+      config: config,
+      audio: audio,
+    };
+
+
+
+    // Detects speech in the audio file. This creates a recognition job that you
+    // can wait for now, or get its result later.
+    const [operation] = await client.longRunningRecognize(request);
+    // Get a Promise representation of the final result of the job
+    const [response] = await operation.promise();
+    const transcription = response.results
+      .map(result => result.alternatives[0].transcript)
+      .join('\n');
+    console.log(`Transcription: ${transcription}`);
+
     console.log(req.file.cloudStoragePublicUrl);
     data.imageUrl = req.file.cloudStoragePublicUrl;
   }
