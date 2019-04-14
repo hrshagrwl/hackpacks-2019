@@ -1,4 +1,5 @@
 const { Storage } = require('@google-cloud/storage');
+const mime = require('mime-types');
 
 module.exports = (req, res, next) => {
   if (!req.file) {
@@ -8,8 +9,8 @@ module.exports = (req, res, next) => {
   const gcs = new Storage()
   const bucket = gcs.bucket(global.CLOUD_BUCKET)
 
-  const filename = Date.now() + req.file.filename;
-  const file = bucket.file(filename);
+  console.log(req.file)
+  req.file.extension = mime.extension(req.file.mimetype);
 
   bucket.upload(req.file.path, function(err, file) {
     if (err) throw new Error(err);
