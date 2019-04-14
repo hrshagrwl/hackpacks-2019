@@ -3,30 +3,12 @@ const speech = require('@google-cloud/speech');
 const mm = require('music-metadata');
 const util = require('util');
 const LANGUAGE = 'en-US';
+const { getSummary } = require('./getSummary');
 
 module.exports = async (req, res) => {
   let data = req.body;
   if (req.file && req.file.cloudStoragePublicUrl) {
-
-
-    // mm.parseFile(req.file.path, {
-    //     native: true
-    //   })
-    //   .then(metadata => {
-    //     console.log(util.inspect(metadata, {
-    //       showHidden: false,
-    //       depth: null
-    //     }));
-    //   })
-    //   .catch(err => {
-    //     console.error(err.message);
-    //   });
-    // Creates a client
     const client = new speech.SpeechClient();
-
-    /**
-     * TODO(developer): Uncomment the following lines before running the sample.
-     */
     const gcsUri = `gs://${global.CLOUD_BUCKET}/${req.file.filename}`;
     const encoding = 'LINEAR16';
     const sampleRateHertz = 8000;
@@ -47,8 +29,6 @@ module.exports = async (req, res) => {
       audio: audio,
     };
 
-
-
     // Detects speech in the audio file. This creates a recognition job that you
     // can wait for now, or get its result later.
     const [operation] = await client.longRunningRecognize(request);
@@ -57,9 +37,15 @@ module.exports = async (req, res) => {
     const transcription = response.results
       .map(result => result.alternatives[0].transcript)
       .join('\n');
+
     console.log(`Transcription: ${transcription}`);
 
-    console.log(req.file.cloudStoragePublicUrl);
-    data.imageUrl = req.file.cloudStoragePublicUrl;
+    const summary = getSummary(transcription);
+
+    console.log(summary);
+
+    res.setHeader('Content-type', "application/octet-stream");
+    res.setHeader('Content-disposition', 'attachment; filename=file.txt');
+    res.send(summary);
   }
 }

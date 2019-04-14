@@ -10,7 +10,6 @@ module.exports = (req, res, next) => {
   const bucket = gcs.bucket(global.CLOUD_BUCKET)
 
   console.log(req.file)
-  req.file.extension = mime.extension(req.file.mimetype);
 
   bucket.upload(req.file.path, function(err, file) {
     if (err) throw new Error(err);
