@@ -10,6 +10,12 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use('/static', express.static('public'))
+
+app.get('/', function(req, res) {
+  res.sendFile('./index.html', {root: __dirname });
+});
+
 const getTranscript = require('./api/getTranscipt');
 const sendFileToGCS = require('./middleware/sendFileToGCS');
 const translateAPI = require('./api/translate');
